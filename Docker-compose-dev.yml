@@ -1,0 +1,42 @@
+version: "3"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: always
+    environment:
+      SQL_HOST: db
+      SQL_PORT: 5432
+      SQL_DATABASE: moranique_db
+      SQL_USER: moranique
+      SQL_PASSWORD: moranique
+      DJANGO_SETTINGS_MODULE: moranique.settings.dev
+    env_file:
+      - .dockerenv.dev
+    command:
+      - bash
+      - -c
+      - |
+        python manage.py wait_for_db -t 120
+        python manage.py migrate
+        python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/app/
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=moranique_db
+      - POSTGRES_USER=moranique
+      - POSTGRES_PASSWORD=moranique
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+      - TZ="Asia/Seoul"
