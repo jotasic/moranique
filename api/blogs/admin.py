@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from api.blogs.models import (
         Category, Tag, Post, 
-        PostTags, File, PostFile
+        PostTag, File, PostFile
         )
 
 
@@ -12,7 +12,7 @@ class PostAdmin(admin.ModelAdmin):
 
 admin.site.register(Category)
 admin.site.register(Tag)
-admin.site.register(PostTags)
+admin.site.register(PostTag)
 admin.site.register(PostFile)
 admin.site.register(File)
 admin.site.register(Post, PostAdmin)

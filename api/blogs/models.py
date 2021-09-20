@@ -1,4 +1,5 @@
-from os import name
+import uuid
+
 from django.db import models
 
 
@@ -15,13 +16,13 @@ class Category(models.Model):
 
 
 class Post(models.Model):
-    author_id   = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True)
-    category_id = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    title       = models.CharField(max_length=255)
-    content     = models.TextField()
-    created_at  = models.DateTimeField(auto_now_add=True)
-    edited_at   = models.DateTimeField(auto_now=True)
-    is_active   = models.BooleanField(default=True)
+    author     = models.ForeignKey('users.User', on_delete=models.SET_NULL, null=True)
+    category   = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    title      = models.CharField(max_length=255)
+    content    = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    edited_at  = models.DateTimeField(auto_now=True)
+    is_active  = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.title}'
@@ -44,12 +45,12 @@ class Tag(models.Model):
         verbose_name_plural = 'Tags'
 
 
-class PostTags(models.Model):
-    post_id = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
-    tag_id  = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
+class PostTag(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
+    tag  = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f'{self.post_id} - {self.tag_id}'
+        return f'{self.post} - {self.tag}'
 
     class Meta:
         db_table            = 'post_tags'
@@ -57,8 +58,19 @@ class PostTags(models.Model):
         verbose_name_plural = 'Post_Tags'
    
 
+def upload_image_to(instance, filename):
+    import os
+    from django.utils.timezone import now
+    from random import randint
+    filename_base, filename_ext = os.path.splitext(filename)
+    return 'posts/%s/%s' % (
+        now().strftime("%Y%m%d"),
+        str(uuid.uuid4()).replace('-','')
+    )
+
+
 class File(models.Model):
-    url       = models.URLField()
+    file      = models.FileField(upload_to=upload_image_to)
     file_type = models.CharField(max_length=50)
     name      = models.CharField(max_length=255)
 
@@ -72,11 +84,11 @@ class File(models.Model):
 
 
 class PostFile(models.Model):
-    post_id = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
-    file_id = models.ForeignKey(File, on_delete=models.SET_NULL, null=True)
+    post = models.ForeignKey(Post, on_delete=models.SET_NULL, null=True)
+    file = models.ForeignKey(File, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f'{self.post_id} - {self.file_id}'
+        return f'{self.post} - {self.file}'
 
     class Meta:
         db_table            = 'post_files'
