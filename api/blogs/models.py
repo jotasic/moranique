@@ -80,7 +80,7 @@ class File(models.Model):
         verbose_name_plural = 'Files'
 
     def __str__(self):
-        return f'{self.name}: {self.url}'
+        return f'{self.name}'
 
 
 class PostFile(models.Model):

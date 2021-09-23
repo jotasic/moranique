@@ -10,12 +10,11 @@ from rest_framework_simplejwt      import authentication
 from django_filters                import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 
-from .serializers import BlogPostSerializer, BlogPostCreationSerializer
+from .serializers import BlogPostReadSerializer, BlogPostCreationSerializer
 from .models      import Post
 
 
 class MultipartJsonParser(parsers.MultiPartParser):
-
     def parse(self, stream, media_type=None, parser_context=None):
         result = super().parse(
             stream,
@@ -25,7 +24,6 @@ class MultipartJsonParser(parsers.MultiPartParser):
         data = {}
 
         for key, value in result.data.items():
-            print(key, value)
             if type(value) != str:
                 data[key] = value
                 continue
@@ -51,7 +49,7 @@ class BlogPostListFilter(FilterSet):
 
 
 class BlogPostView(ReadOnlyModelViewSet):
-    serializer_class   = BlogPostSerializer
+    serializer_class   = BlogPostReadSerializer
     pagination_class   = LimitOffsetPagination
     filter_backends    = (DjangoFilterBackend, )
     filterset_class    = BlogPostListFilter
