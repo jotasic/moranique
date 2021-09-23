@@ -96,7 +96,7 @@
 
 1. Github Clone
 ```bash
-git clone https://github.com/Jmoon144/moranique.git
+git clone https://github.com/jotasic/moranique.git
 ```
 
 2. manage.py 가 있는 폴더로 이동 후, docker-compose 설정 파일인 .dockerenv.dev 생성
@@ -127,7 +127,7 @@ $ docker-compose up -f ./Docker-compose-dev.yml up
 ## 배포 방법
 1. Github Clone
 ```bash
-git clone https://github.com/Jmoon144/moranique.git
+git clone https://github.com/jotasic/moranique.git
 ```
 
 2. docker image 생성
