@@ -14,8 +14,8 @@ router.register(r'blogs', BlogPostView)
 
 urlpatterns = [
     path('/user/registration/', RegisterUserView.as_view(), name='registration'),
-    path('/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('/user/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('/user/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('/', include(router.urls), name='blogs'),
     path('/blog/create', BlogPostCreateView.as_view(), name='create post'),
 ]
