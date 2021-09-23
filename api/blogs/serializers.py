@@ -29,7 +29,7 @@ class PostTagSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostTag
-        fields = ('id', 'tag')
+        exclude = ('post',)
         
 
 class FileSerializer(serializers.ModelSerializer):
@@ -43,10 +43,10 @@ class PostFileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PostFile
-        fields = ('id', 'file')
+        exclude = ('post',)
 
 
-class BlogPostSerializer(serializers.ModelSerializer):
+class BlogPostReadSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=False)
     author = UserSerializer(many=False)
     tags = PostTagSerializer(many=True, source='posttag_set')
@@ -54,17 +54,16 @@ class BlogPostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Post
-        fields = ('id', 'title', 'content', 'created_at', 'edited_at', 'author', 'category', 'tags', 'files')
+        fields = '__all__'
 
 
 class BlogPostCreationSerializer(serializers.ModelSerializer):
     tags = serializers.ListSerializer(child=serializers.CharField(), write_only=True)
     files = serializers.ListSerializer(child=serializers.FileField(), write_only=True)
-
+    
     class Meta:
         model = Post
-        fields = '__all__'
-        read_only_fields = ('is_active', 'author')
+        exclude = ('is_active', 'author')
 
     def create(self, validated_data):
         tags = validated_data.pop('tags')
@@ -84,3 +83,6 @@ class BlogPostCreationSerializer(serializers.ModelSerializer):
             PostFile.objects.create(post=new_post, file=new_file)
 
         return new_post
+
+    def to_representation(self, instance):
+        return BlogPostReadSerializer(instance).data

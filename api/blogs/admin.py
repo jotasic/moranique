@@ -13,6 +13,6 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Category)
 admin.site.register(Tag)
 admin.site.register(PostTag)
-admin.site.register(PostFile)
 admin.site.register(File)
+admin.site.register(PostFile)
 admin.site.register(Post, PostAdmin)
